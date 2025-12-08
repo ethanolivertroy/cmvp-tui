@@ -2,6 +2,15 @@
 
 Terminal UI for searching NIST Cryptographic Module Validation Program (CMVP) validated modules.
 
+
+
+https://github.com/user-attachments/assets/382222d7-1a74-45c2-83b5-847b534f2c6a
+
+
+
+
+
+
 ## Install
 
 ```bash
