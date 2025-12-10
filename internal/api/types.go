@@ -9,6 +9,19 @@ type ModuleJSON struct {
 	ModuleName           string `json:"Module Name"`
 	ModuleType           string `json:"Module Type"`
 	ValidationDate       string `json:"Validation Date"`
+
+	// Extended fields from certificate detail extraction
+	Standard           string   `json:"standard"`
+	Status             string   `json:"status"`
+	OverallLevel       interface{} `json:"overall_level"` // Can be int or string from API
+	SunsetDate         string   `json:"sunset_date"`
+	Caveat             string   `json:"caveat"`
+	Embodiment         string   `json:"embodiment"`
+	Description        string   `json:"description"`
+	Lab                string   `json:"lab"`
+	Algorithms         []string `json:"algorithms"`
+	SecurityPolicyURL  string   `json:"security_policy_url"`
+	CertificateDetailURL string `json:"certificate_detail_url"`
 }
 
 // InProcessModuleJSON has slightly different structure for modules in process

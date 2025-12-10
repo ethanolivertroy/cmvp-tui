@@ -33,4 +33,15 @@ type Module struct {
 	ModuleType        string
 	ValidationDate    time.Time
 	Status            ModuleStatus
+
+	// Extended fields from certificate detail extraction
+	Standard          string
+	OverallLevel      int
+	SunsetDate        string
+	Caveat            string
+	Embodiment        string
+	Description       string
+	Lab               string
+	Algorithms        []string
+	SecurityPolicyURL string
 }

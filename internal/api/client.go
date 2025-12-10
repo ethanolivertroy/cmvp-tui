@@ -97,6 +97,17 @@ func (c *Client) fetchModules(endpoint string, status model.ModuleStatus) ([]mod
 			ModuleType:        jm.ModuleType,
 			ValidationDate:    parseDate(jm.ValidationDate),
 			Status:            status,
+
+			// Extended fields
+			Standard:          jm.Standard,
+			OverallLevel:      parseOverallLevel(jm.OverallLevel),
+			SunsetDate:        jm.SunsetDate,
+			Caveat:            jm.Caveat,
+			Embodiment:        jm.Embodiment,
+			Description:       jm.Description,
+			Lab:               jm.Lab,
+			Algorithms:        jm.Algorithms,
+			SecurityPolicyURL: jm.SecurityPolicyURL,
 		}
 	}
 	return modules, nil
@@ -127,6 +138,18 @@ func (c *Client) fetchInProcessModules() ([]model.Module, error) {
 		}
 	}
 	return modules, nil
+}
+
+// parseOverallLevel converts the API overall_level (can be int or string) to int
+func parseOverallLevel(v interface{}) int {
+	switch val := v.(type) {
+	case float64:
+		return int(val)
+	case int:
+		return val
+	default:
+		return 0 // String values like "Tested Configuration(s)" become 0
+	}
 }
 
 // parseDate parses a date string in MM/DD/YYYY format

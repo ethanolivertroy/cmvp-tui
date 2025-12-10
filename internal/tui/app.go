@@ -191,20 +191,36 @@ func (m Model) renderDetailView() string {
 
 	var b strings.Builder
 
-	// Title with status badge
+	// Title with status badge and level badge
 	b.WriteString(DetailTitleStyle.Render(mod.ModuleName))
 	b.WriteString("  ")
 	b.WriteString(StatusBadge(mod.Status))
+	if mod.OverallLevel > 0 {
+		b.WriteString("  ")
+		b.WriteString(LevelBadge(mod.OverallLevel))
+	}
 	b.WriteString("\n\n")
+
+	// Caveat warning (displayed prominently if present)
+	if mod.Caveat != "" {
+		b.WriteString(DetailLabelStyle.Render("CAVEAT:"))
+		b.WriteString("\n")
+		b.WriteString(CaveatStyle.Render(mod.Caveat))
+		b.WriteString("\n\n")
+	}
 
 	// Details grid
 	details := []struct {
 		label string
 		value string
+		isURL bool
 	}{
-		{"Certificate #:", mod.CertificateNumber},
-		{"Vendor:", mod.VendorName},
-		{"Module Type:", mod.ModuleType},
+		{"Certificate #:", mod.CertificateNumber, false},
+		{"Vendor:", mod.VendorName, false},
+		{"Module Type:", mod.ModuleType, false},
+		{"Standard:", mod.Standard, false},
+		{"Embodiment:", mod.Embodiment, false},
+		{"Lab:", mod.Lab, false},
 	}
 
 	// Add validation date if available
@@ -212,15 +228,34 @@ func (m Model) renderDetailView() string {
 		details = append(details, struct {
 			label string
 			value string
-		}{"Validation Date:", mod.ValidationDate.Format("January 2, 2006")})
+			isURL bool
+		}{"Validation Date:", mod.ValidationDate.Format("January 2, 2006"), false})
 	}
 
-	// Add URL if available
+	// Add sunset date if available
+	if mod.SunsetDate != "" {
+		details = append(details, struct {
+			label string
+			value string
+			isURL bool
+		}{"Sunset Date:", mod.SunsetDate, false})
+	}
+
+	// Add URLs
 	if mod.CertificateURL != "" {
 		details = append(details, struct {
 			label string
 			value string
-		}{"NIST URL:", mod.CertificateURL})
+			isURL bool
+		}{"NIST URL:", mod.CertificateURL, true})
+	}
+
+	if mod.SecurityPolicyURL != "" {
+		details = append(details, struct {
+			label string
+			value string
+			isURL bool
+		}{"Security Policy:", mod.SecurityPolicyURL, true})
 	}
 
 	for _, d := range details {
@@ -228,10 +263,30 @@ func (m Model) renderDetailView() string {
 			continue
 		}
 		b.WriteString(DetailLabelStyle.Render(d.label))
-		if d.label == "NIST URL:" {
+		if d.isURL {
 			b.WriteString(DetailURLStyle.Render(d.value))
 		} else {
 			b.WriteString(DetailValueStyle.Render(d.value))
+		}
+		b.WriteString("\n")
+	}
+
+	// Description (if available)
+	if mod.Module.Description != "" {
+		b.WriteString("\n")
+		b.WriteString(DetailLabelStyle.Render("Description:"))
+		b.WriteString("\n")
+		b.WriteString(DescriptionStyle.Render(mod.Module.Description))
+		b.WriteString("\n")
+	}
+
+	// Algorithms (if available)
+	if len(mod.Algorithms) > 0 {
+		b.WriteString("\n")
+		b.WriteString(DetailLabelStyle.Render("Algorithms:"))
+		b.WriteString("\n")
+		for _, algo := range mod.Algorithms {
+			b.WriteString(AlgorithmStyle.Render(algo))
 		}
 		b.WriteString("\n")
 	}
