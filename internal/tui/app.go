@@ -299,13 +299,18 @@ func (m Model) renderDetailView() string {
 	}
 
 	// Algorithms (toggle between categories and detailed view)
-	if m.showAlgoDetails && len(mod.AlgorithmsDetailed) > 0 {
+	if m.showAlgoDetails {
 		b.WriteString("\n")
 		b.WriteString(DetailLabelStyle.Render("Algorithms (Detailed):"))
 		b.WriteString("\n")
-		for _, algo := range mod.AlgorithmsDetailed {
-			b.WriteString("  • ")
-			b.WriteString(DetailValueStyle.Render(algo))
+		if len(mod.AlgorithmsDetailed) > 0 {
+			for _, algo := range mod.AlgorithmsDetailed {
+				b.WriteString("  • ")
+				b.WriteString(DetailValueStyle.Render(algo))
+				b.WriteString("\n")
+			}
+		} else {
+			b.WriteString(HelpStyle.Render("  (No detailed algorithm data available yet)"))
 			b.WriteString("\n")
 		}
 	} else if len(mod.Algorithms) > 0 {
