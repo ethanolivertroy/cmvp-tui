@@ -21,6 +21,7 @@ Download the latest release for your platform:
 ```bash
 curl -L https://github.com/ethanolivertroy/NIST-CMVP-CLI/releases/latest/download/cmvp-darwin-arm64 -o cmvp
 chmod +x cmvp
+xattr -d com.apple.quarantine cmvp  # Remove macOS quarantine flag
 sudo mv cmvp /usr/local/bin/
 ```
 
@@ -28,8 +29,11 @@ sudo mv cmvp /usr/local/bin/
 ```bash
 curl -L https://github.com/ethanolivertroy/NIST-CMVP-CLI/releases/latest/download/cmvp-darwin-amd64 -o cmvp
 chmod +x cmvp
+xattr -d com.apple.quarantine cmvp  # Remove macOS quarantine flag
 sudo mv cmvp /usr/local/bin/
 ```
+
+> **Note:** The `xattr` command removes the quarantine attribute that macOS adds to downloaded files. Without it, Gatekeeper will block the unsigned binary.
 
 **Linux (AMD64)**
 ```bash
