@@ -9,8 +9,8 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ethanolivertroy/nist-cmvp-cli/internal/api"
-	"github.com/ethanolivertroy/nist-cmvp-cli/internal/model"
+	"github.com/ethanolivertroy/cmvp-tui/internal/api"
+	"github.com/ethanolivertroy/cmvp-tui/internal/model"
 )
 
 // ViewState represents the current view of the application

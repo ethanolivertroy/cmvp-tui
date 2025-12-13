@@ -5,7 +5,7 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/ethanolivertroy/nist-cmvp-cli/internal/tui"
+	"github.com/ethanolivertroy/cmvp-tui/internal/tui"
 )
 
 func main() {

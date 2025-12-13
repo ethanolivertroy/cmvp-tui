@@ -1,4 +1,4 @@
-module github.com/ethanolivertroy/nist-cmvp-cli
+module github.com/ethanolivertroy/cmvp-tui
 
 go 1.25.5
 

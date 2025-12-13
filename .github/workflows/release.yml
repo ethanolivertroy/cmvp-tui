@@ -111,26 +111,26 @@ jobs:
           cat > homebrew-sectools/Formula/cmvp.rb << EOF
           class Cmvp < Formula
             desc "Terminal UI for searching NIST CMVP validated cryptographic modules"
-            homepage "https://github.com/ethanolivertroy/NIST-CMVP-CLI"
+            homepage "https://github.com/ethanolivertroy/cmvp-tui"
             version "${VERSION}"
             license "MIT"
 
             on_macos do
               if Hardware::CPU.arm?
-                url "https://github.com/ethanolivertroy/NIST-CMVP-CLI/releases/download/v${VERSION}/cmvp-darwin-arm64"
+                url "https://github.com/ethanolivertroy/cmvp-tui/releases/download/v${VERSION}/cmvp-darwin-arm64"
                 sha256 "${SHA_DARWIN_ARM64}"
               else
-                url "https://github.com/ethanolivertroy/NIST-CMVP-CLI/releases/download/v${VERSION}/cmvp-darwin-amd64"
+                url "https://github.com/ethanolivertroy/cmvp-tui/releases/download/v${VERSION}/cmvp-darwin-amd64"
                 sha256 "${SHA_DARWIN_AMD64}"
               end
             end
 
             on_linux do
               if Hardware::CPU.arm?
-                url "https://github.com/ethanolivertroy/NIST-CMVP-CLI/releases/download/v${VERSION}/cmvp-linux-arm64"
+                url "https://github.com/ethanolivertroy/cmvp-tui/releases/download/v${VERSION}/cmvp-linux-arm64"
                 sha256 "${SHA_LINUX_ARM64}"
               else
-                url "https://github.com/ethanolivertroy/NIST-CMVP-CLI/releases/download/v${VERSION}/cmvp-linux-amd64"
+                url "https://github.com/ethanolivertroy/cmvp-tui/releases/download/v${VERSION}/cmvp-linux-amd64"
                 sha256 "${SHA_LINUX_AMD64}"
               end
             end

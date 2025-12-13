@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ethanolivertroy/nist-cmvp-cli/internal/model"
+	"github.com/ethanolivertroy/cmvp-tui/internal/model"
 )
 
 const (

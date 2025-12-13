@@ -2,7 +2,7 @@ package tui
 
 import (
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ethanolivertroy/nist-cmvp-cli/internal/model"
+	"github.com/ethanolivertroy/cmvp-tui/internal/model"
 )
 
 var (

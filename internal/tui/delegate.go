@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/ethanolivertroy/nist-cmvp-cli/internal/model"
+	"github.com/ethanolivertroy/cmvp-tui/internal/model"
 )
 
 // ModuleDelegate is a custom delegate for rendering module items in the list
