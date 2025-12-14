@@ -9,148 +9,24 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - goos: darwin
-            goarch: arm64
-            suffix: darwin-arm64
-          - goos: darwin
-            goarch: amd64
-            suffix: darwin-amd64
-          - goos: linux
-            goarch: arm64
-            suffix: linux-arm64
-          - goos: linux
-            goarch: amd64
-            suffix: linux-amd64
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.21'
 
-      - name: Build
-        env:
-          GOOS: ${{ matrix.goos }}
-          GOARCH: ${{ matrix.goarch }}
-          CGO_ENABLED: 0
-        run: |
-          go build -ldflags="-s -w" -o cmvp-${{ matrix.suffix }} .
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
         with:
-          name: cmvp-${{ matrix.suffix }}
-          path: cmvp-${{ matrix.suffix }}
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: Prepare release assets
-        run: |
-          mkdir -p release
-          for dir in artifacts/*/; do
-            cp "$dir"* release/
-          done
-          cd release
-          for f in *; do
-            sha256sum "$f" > "$f.sha256"
-          done
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: release/*
-          generate_release_notes: true
-          draft: false
-          prerelease: false
+          version: latest
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  update-homebrew:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout homebrew-sectools
-        uses: actions/checkout@v4
-        with:
-          repository: ethanolivertroy/homebrew-sectools
-          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
-          path: homebrew-sectools
-
-      - name: Download artifacts for checksums
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: Update formula
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/v}
-
-          SHA_DARWIN_ARM64=$(sha256sum artifacts/cmvp-darwin-arm64/cmvp-darwin-arm64 | cut -d' ' -f1)
-          SHA_DARWIN_AMD64=$(sha256sum artifacts/cmvp-darwin-amd64/cmvp-darwin-amd64 | cut -d' ' -f1)
-          SHA_LINUX_ARM64=$(sha256sum artifacts/cmvp-linux-arm64/cmvp-linux-arm64 | cut -d' ' -f1)
-          SHA_LINUX_AMD64=$(sha256sum artifacts/cmvp-linux-amd64/cmvp-linux-amd64 | cut -d' ' -f1)
-
-          cat > homebrew-sectools/Formula/cmvp.rb << EOF
-          class Cmvp < Formula
-            desc "Terminal UI for searching NIST CMVP validated cryptographic modules"
-            homepage "https://github.com/ethanolivertroy/cmvp-tui"
-            version "${VERSION}"
-            license "MIT"
-
-            on_macos do
-              if Hardware::CPU.arm?
-                url "https://github.com/ethanolivertroy/cmvp-tui/releases/download/v${VERSION}/cmvp-darwin-arm64"
-                sha256 "${SHA_DARWIN_ARM64}"
-              else
-                url "https://github.com/ethanolivertroy/cmvp-tui/releases/download/v${VERSION}/cmvp-darwin-amd64"
-                sha256 "${SHA_DARWIN_AMD64}"
-              end
-            end
-
-            on_linux do
-              if Hardware::CPU.arm?
-                url "https://github.com/ethanolivertroy/cmvp-tui/releases/download/v${VERSION}/cmvp-linux-arm64"
-                sha256 "${SHA_LINUX_ARM64}"
-              else
-                url "https://github.com/ethanolivertroy/cmvp-tui/releases/download/v${VERSION}/cmvp-linux-amd64"
-                sha256 "${SHA_LINUX_AMD64}"
-              end
-            end
-
-            def install
-              binary_name = Dir["*"].first
-              bin.install binary_name => "cmvp"
-            end
-
-            test do
-              assert_match "CMVP", shell_output("#{bin}/cmvp --help 2>&1", 1)
-            end
-          end
-          EOF
-
-      - name: Commit and push
-        run: |
-          cd homebrew-sectools
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add Formula/cmvp.rb
-          git commit -m "Update cmvp to ${GITHUB_REF#refs/tags/}"
-          git push
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
