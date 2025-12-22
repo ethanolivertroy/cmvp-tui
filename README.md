@@ -6,6 +6,7 @@
 ![Codecov](https://codecov.io/gh/ethanolivertroy/cmvp-tui/branch/main/graph/badge.svg)
 ![GitHub release](https://img.shields.io/github/v/release/ethanolivertroy/cmvp-tui)
 ![Go Report Card](https://goreportcard.com/badge/github.com/ethanolivertroy/cmvp-tui)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/ethanolivertroy/cmvp-tui/badge)](https://scorecard.dev/viewer/?uri=github.com/ethanolivertroy/cmvp-tui)
 
 Terminal UI for searching NIST Cryptographic Module Validation Program (CMVP) validated modules.
 
