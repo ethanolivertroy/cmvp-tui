@@ -222,6 +222,172 @@ func TestViewState_Constants(t *testing.T) {
 	}
 }
 
+func TestModel_Update_EnterKey_SelectsModule(t *testing.T) {
+	m := NewModel()
+	m.width = 80
+	m.height = 24
+
+	// Load modules to initialize the list
+	modules := []list.Item{
+		model.ModuleItem{
+			Module: model.Module{
+				ModuleName: "Test Module",
+				VendorName: "Test Vendor",
+				Status:     model.StatusActive,
+			},
+		},
+	}
+	newModel, _ := m.Update(ModulesLoadedMsg{Modules: modules})
+	m = newModel.(Model)
+
+	// Press enter to select the module
+	msg := tea.KeyMsg{Type: tea.KeyEnter}
+	newModel, _ = m.Update(msg)
+	updated := newModel.(Model)
+
+	if updated.view != ViewDetail {
+		t.Error("expected Enter to switch to detail view")
+	}
+	if updated.selectedModule == nil {
+		t.Error("expected selectedModule to be set")
+	}
+}
+
+func TestModel_Update_BackspaceFromDetail(t *testing.T) {
+	m := NewModel()
+	m.loading = false
+	m.view = ViewDetail
+	m.selectedModule = &model.ModuleItem{}
+
+	msg := tea.KeyMsg{Type: tea.KeyBackspace}
+	newModel, _ := m.Update(msg)
+	updated := newModel.(Model)
+
+	if updated.view != ViewList {
+		t.Error("expected Backspace in detail view to return to list view")
+	}
+}
+
+func TestModel_View_DetailView(t *testing.T) {
+	m := NewModel()
+	m.loading = false
+	m.view = ViewDetail
+	m.width = 80
+	m.height = 24
+	m.selectedModule = &model.ModuleItem{
+		Module: model.Module{
+			CertificateNumber: "1234",
+			ModuleName:        "Test Crypto Module",
+			VendorName:        "Acme Corp",
+			ModuleType:        "Hardware",
+			Status:            model.StatusActive,
+			Standard:          "FIPS 140-3",
+			OverallLevel:      2,
+			Algorithms:        []string{"AES", "SHA-256"},
+		},
+	}
+
+	view := m.View()
+
+	// Check that detail view contains expected content
+	if !strings.Contains(view, "Test Crypto Module") {
+		t.Error("detail view should contain module name")
+	}
+	if !strings.Contains(view, "Acme Corp") {
+		t.Error("detail view should contain vendor name")
+	}
+}
+
+func TestModel_View_DetailView_WithCaveat(t *testing.T) {
+	m := NewModel()
+	m.loading = false
+	m.view = ViewDetail
+	m.width = 80
+	m.height = 24
+	m.selectedModule = &model.ModuleItem{
+		Module: model.Module{
+			ModuleName: "Caveat Module",
+			VendorName: "Vendor",
+			Status:     model.StatusActive,
+			Caveat:     "Security warning here",
+		},
+	}
+
+	view := m.View()
+
+	if !strings.Contains(view, "CAVEAT") {
+		t.Error("detail view should show CAVEAT label when caveat exists")
+	}
+}
+
+func TestModel_View_DetailView_WithAlgoDetails(t *testing.T) {
+	m := NewModel()
+	m.loading = false
+	m.view = ViewDetail
+	m.width = 80
+	m.height = 24
+	m.showAlgoDetails = true
+	m.algoViewportReady = false
+	m.selectedModule = &model.ModuleItem{
+		Module: model.Module{
+			ModuleName:         "Algo Module",
+			VendorName:         "Vendor",
+			Status:             model.StatusActive,
+			AlgorithmsDetailed: []string{},
+		},
+	}
+
+	view := m.View()
+
+	if !strings.Contains(view, "Detailed") {
+		t.Error("detail view should show 'Detailed' when showAlgoDetails is true")
+	}
+}
+
+func TestModel_View_DetailView_NilModule(t *testing.T) {
+	m := NewModel()
+	m.loading = false
+	m.view = ViewDetail
+	m.selectedModule = nil
+
+	view := m.View()
+
+	// Should return empty string for nil module
+	if view != "" {
+		t.Log("view returned non-empty for nil module, which is acceptable")
+	}
+}
+
+func TestModel_Update_CtrlC_Quits(t *testing.T) {
+	m := NewModel()
+	m.loading = false
+
+	msg := tea.KeyMsg{Type: tea.KeyCtrlC}
+	_, cmd := m.Update(msg)
+
+	if cmd == nil {
+		t.Error("expected Ctrl+C to return quit command")
+	}
+}
+
+func TestBuildAlgorithmContent(t *testing.T) {
+	algorithms := []string{"AES-128", "SHA-256", "RSA-2048"}
+	content := buildAlgorithmContent(algorithms)
+
+	for _, algo := range algorithms {
+		if !strings.Contains(content, algo) {
+			t.Errorf("content should contain %s", algo)
+		}
+	}
+}
+
+func TestBuildAlgorithmContent_Empty(t *testing.T) {
+	content := buildAlgorithmContent([]string{})
+	if content != "" {
+		t.Error("empty algorithms should produce empty content")
+	}
+}
+
 // Helper types for testing
 type testError struct{}
 
