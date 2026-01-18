@@ -16,7 +16,7 @@ permissions:
 jobs:
   scan-pr:
     if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
-    uses: "google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@v2.3.1"
+    uses: "google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@v2.3.2"
 
   scan-scheduled:
     if: github.event_name == 'push' || github.event_name == 'schedule'
