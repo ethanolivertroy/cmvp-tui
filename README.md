@@ -1,6 +1,6 @@
 # cmvp-tui
 
-![Go Version](https://img.shields.io/badge/go-1.25.5-blue)
+![Go Version](https://img.shields.io/badge/go-1.25.7-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![CI](https://github.com/ethanolivertroy/cmvp-tui/workflows/CI/badge.svg)
 ![Codecov](https://codecov.io/gh/ethanolivertroy/cmvp-tui/branch/main/graph/badge.svg)
