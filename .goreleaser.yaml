@@ -71,3 +71,26 @@ msi:
     wxs: ./windows/app.wxs
     ids:
       - default
+
+winget:
+  - name: cmvp
+    publisher: ethanolivertroy
+    short_description: "Terminal UI for searching NIST CMVP validated cryptographic modules"
+    license: MIT
+    publisher_url: https://github.com/ethanolivertroy
+    homepage: https://github.com/ethanolivertroy/cmvp-tui
+    tags:
+      - security
+      - cryptography
+      - nist
+      - cmvp
+      - fips
+      - tui
+      - terminal
+    repository:
+      owner: ethanolivertroy
+      name: winget-pkgs
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
