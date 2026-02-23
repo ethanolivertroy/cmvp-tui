@@ -16,3 +16,4 @@ cmvp
 coverage.out
 *.test
 *.out
+dist/

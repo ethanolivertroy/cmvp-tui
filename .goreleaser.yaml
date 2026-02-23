@@ -18,7 +18,7 @@ builds:
 
 archives:
   - id: default
-    format: tar.gz
+    formats: [tar.gz]
     name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
     format_overrides:
       - goos: windows
@@ -42,19 +42,14 @@ release:
     owner: ethanolivertroy
     name: cmvp-tui
 
-brews:
+homebrew_casks:
   - repository:
       owner: ethanolivertroy
       name: homebrew-sectools
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    directory: Formula
+    directory: Casks
     homepage: "https://github.com/ethanolivertroy/cmvp-tui"
     description: "Terminal UI for searching NIST CMVP validated cryptographic modules"
-    license: "MIT"
-    install: |
-      bin.install "cmvp"
-    test: |
-      assert_match version.to_s, shell_output("#{bin}/cmvp --version")
 
 scoops:
   - repository:
