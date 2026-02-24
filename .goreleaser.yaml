@@ -50,6 +50,13 @@ homebrew_casks:
     directory: Casks
     homepage: "https://github.com/ethanolivertroy/cmvp-tui"
     description: "Terminal UI for searching NIST CMVP validated cryptographic modules"
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr",
+              args: ["-dr", "com.apple.quarantine", "#{staged_path}/cmvp"]
+          end
 
 scoops:
   - repository:
