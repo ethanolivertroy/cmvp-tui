@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/ethanolivertroy/cmvp-tui/internal/model"
@@ -13,7 +15,8 @@ import (
 const maxResponseSize = 10 * 1024 * 1024 // 10MB limit for API responses
 
 const (
-	BaseURL            = "https://ethanolivertroy.github.io/NIST-CMVP-API/api"
+	BaseURL            = "https://hackidle.github.io/nist-cmvp-api/api"
+	BaseURLEnvVar      = "CMVP_API_BASE_URL"
 	ModulesEndpoint    = "/modules.json"
 	HistoricalEndpoint = "/historical-modules.json"
 	InProcessEndpoint  = "/modules-in-process.json"
@@ -30,8 +33,16 @@ type Client struct {
 func NewClient() *Client {
 	return &Client{
 		httpClient: &http.Client{Timeout: 30 * time.Second},
-		baseURL:    BaseURL,
+		baseURL:    resolveBaseURL(),
 	}
+}
+
+func resolveBaseURL() string {
+	if override := strings.TrimRight(strings.TrimSpace(os.Getenv(BaseURLEnvVar)), "/"); override != "" {
+		return override
+	}
+
+	return BaseURL
 }
 
 // FetchAllModules fetches all three datasets and combines them

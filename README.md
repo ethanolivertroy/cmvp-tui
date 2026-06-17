@@ -76,7 +76,7 @@ cmvp
 
 ## Data Source
 
-Pulls from [NIST-CMVP-API](https://github.com/ethanolivertroy/NIST-CMVP-API) which mirrors NIST CMVP data.
+Pulls from [nist-cmvp-api](https://github.com/hackIDLE/nist-cmvp-api) which mirrors NIST CMVP data.
 
 ## License
 
