@@ -23,6 +23,15 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
+func TestNewClient_UsesEnvOverride(t *testing.T) {
+	t.Setenv(BaseURLEnvVar, "https://example.com/cmvp/api/")
+
+	client := NewClient()
+	if client.baseURL != "https://example.com/cmvp/api" {
+		t.Errorf("baseURL = %v, want %v", client.baseURL, "https://example.com/cmvp/api")
+	}
+}
+
 func TestClient_FetchAllModules(t *testing.T) {
 	// Create mock responses
 	modulesResp := ModulesResponse{
